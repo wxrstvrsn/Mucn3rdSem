@@ -4,20 +4,16 @@
 
 #include "TimeMeter.h"
 #include <windows.h>
+#include <memory>
 
 struct TimeMeter::TimeMeterImpl {
     LARGE_INTEGER frequency;
     LARGE_INTEGER start;
-    LARGE_INTEGER *timestamps;
+    std::unique_ptr<LARGE_INTEGER[]> timestamps;
 
-    TimeMeterImpl(unsigned count) {
-        timestamps = new LARGE_INTEGER[count];
+    TimeMeterImpl(unsigned count) : timestamps(std::make_unique<LARGE_INTEGER[]>(count)) {
         QueryPerformanceFrequency(&frequency);
         QueryPerformanceCounter(&start);
-    }
-
-    ~TimeMeterImpl() {
-        delete[] timestamps;
     }
 
     double setTimeStamp(unsigned num) {
@@ -54,9 +50,7 @@ struct TimeMeter::TimeMeterImpl {
 
 TimeMeter::TimeMeter(unsigned count) : pImpl(new TimeMeterImpl(count)) {}
 
-TimeMeter::~TimeMeter() {
-    delete pImpl;
-}
+TimeMeter::~TimeMeter() = default;
 
 double TimeMeter::setTimeStamp(unsigned num) {
     return pImpl->setTimeStamp(num);
