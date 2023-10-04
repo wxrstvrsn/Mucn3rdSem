@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 
     int secondPlayerScore = std::accumulate(cards.begin() + N / 2, cards.end(), 0);
 
-    int maxWin = secondPlayerScore - firstPlayerScore;
+    int maxWin = firstPlayerScore - secondPlayerScore;
 
     outputFile << maxWin << std::endl;
 
